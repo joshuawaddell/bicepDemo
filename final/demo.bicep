@@ -1,0 +1,34 @@
+param location string = resourceGroup().location
+param workload string = 'bicep'
+param environment string = 'production'
+param instanceNumber string = '001'
+
+var appServicePlanName = 'asp-${workload}-${environment}-${instanceNumber}'
+var appServiceName = 'as-${workload}-${environment}-${uniqueString(resourceGroup().id)}'
+var applicationName = 'bicep'
+
+resource appServicePlan 'Microsoft.Web/serverfarms@2020-12-01' = {
+  name: appServicePlanName
+  location: location
+  tags: {
+    workload: applicationName
+  }
+  sku: {
+    name: 'F1'
+    tier: 'Free'
+    capacity: 1
+  }
+}
+
+output appServicePlanId string = appServicePlan.id
+
+resource webApplication 'Microsoft.Web/sites@2018-11-01' = {
+  name: appServiceName
+  location: location
+  tags: {
+    workload: applicationName
+  }
+  properties: {
+    serverFarmId: appServicePlan.id
+  }
+}

@@ -6,7 +6,8 @@ param instanceNumber string = '001'
 var appServicePlanName = 'asp-${workload}-${environment}-${instanceNumber}'
 var appServiceName = 'as-${workload}-${environment}-${uniqueString(resourceGroup().id)}'
 var tags = {
-  costCenter: 'it'
+  environment: environment
+  workload: workload
 }
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-12-01' = {
@@ -20,9 +21,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2020-12-01' = {
   }
 }
 
-output appServicePlanId string = appServicePlan.id
-
-resource webApplication 'Microsoft.Web/sites@2018-11-01' = {
+resource appService 'Microsoft.Web/sites@2018-11-01' = {
   name: appServiceName
   location: location
   tags: tags
@@ -30,3 +29,5 @@ resource webApplication 'Microsoft.Web/sites@2018-11-01' = {
     serverFarmId: appServicePlan.id
   }
 }
+
+output appServicePlanId string = appServicePlan.id

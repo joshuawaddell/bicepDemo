@@ -8,7 +8,7 @@ param location string = resourceGroup().location
   'test'
   'prod'
 ])
-param environmentName string = 'prod'
+param environment string = 'prod'
 
 @description('The instance number of the resource.')
 param instanceNumber string = '001'
@@ -17,8 +17,8 @@ param instanceNumber string = '001'
 param workload string = 'bicep'
 
 // Variables
-var appServiceName = 'as-${workload}-${environmentName}-${uniqueString(resourceGroup().id)}'
-var appServicePlanName = 'asp-${workload}-${environmentName}-${instanceNumber}'
+var appServiceName = 'as-${workload}-${environment}-${uniqueString(resourceGroup().id)}'
+var appServicePlanName = 'asp-${workload}-${environment}-${instanceNumber}'
 var appServiceEnvironmentSettings = {
   dev: {
     sku: 'F1'
@@ -33,20 +33,19 @@ var appServiceEnvironmentSettings = {
     instanceCount: 5
   }
 }
-var resourceTags = {
-  costCenter: 'it'
-  environment: 'production'
-  workload: 'bicep'
+var tags = {
+  environment: environment
+  workload: workload
 }
 
 module appServicePlanModule 'appserviceplan.bicep' = {
   name: 'appServicePlanModule'
   params: {
-    appServicePlanInstanceCount: appServiceEnvironmentSettings[environmentName].instanceCount
+    appServicePlanInstanceCount: appServiceEnvironmentSettings[environment].instanceCount
     appServicePlanName: appServicePlanName
-    appServicePlanSku: appServiceEnvironmentSettings[environmentName].sku
+    appServicePlanSku: appServiceEnvironmentSettings[environment].sku
     location: location
-    resourceTags: resourceTags
+    tags: tags
   }
 }
 
@@ -56,6 +55,6 @@ module appServiceModule 'appservice.bicep' = {
     appServiceName: appServiceName
     appServicePlanId: appServicePlanModule.outputs.appServicePlanId
     location: location
-    resourceTags: resourceTags
+    tags: tags
   }
 }

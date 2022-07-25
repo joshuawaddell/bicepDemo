@@ -9,13 +9,13 @@ param appServiceName string
 param appServicePlanId string
 
 @description('The tags for the resource.')
-param resourceTags object
+param tags object
 
 // Resource - App Service
 resource webApplication 'Microsoft.Web/sites@2018-11-01' = {
   name: appServiceName
   location: location
-  tags: resourceTags
+  tags: tags
   properties: {
     serverFarmId: appServicePlanId
   }

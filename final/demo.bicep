@@ -5,14 +5,14 @@ param instanceNumber string = '001'
 
 var appServicePlanName = 'asp-${workload}-${environment}-${instanceNumber}'
 var appServiceName = 'as-${workload}-${environment}-${uniqueString(resourceGroup().id)}'
-var applicationName = 'bicep'
+var tags = {
+  costCenter: 'it'
+}
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-12-01' = {
   name: appServicePlanName
   location: location
-  tags: {
-    workload: applicationName
-  }
+  tags: tags
   sku: {
     name: 'F1'
     tier: 'Free'
@@ -25,9 +25,7 @@ output appServicePlanId string = appServicePlan.id
 resource webApplication 'Microsoft.Web/sites@2018-11-01' = {
   name: appServiceName
   location: location
-  tags: {
-    workload: applicationName
-  }
+  tags: tags
   properties: {
     serverFarmId: appServicePlan.id
   }

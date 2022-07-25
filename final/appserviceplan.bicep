@@ -6,7 +6,7 @@ param location string
 param appServicePlanName string
 
 @description('The tags for the resource.')
-param resourceTags object
+param tags object
 
 @description('The Sku of the App Service Plan.')
 param appServicePlanSku string
@@ -18,7 +18,7 @@ param appServicePlanInstanceCount int
 resource appServicePlan 'Microsoft.Web/serverfarms@2020-12-01' = {
   name: appServicePlanName
   location: location
-  tags: resourceTags
+  tags: tags
   sku: {
     name: appServicePlanSku
     capacity: appServicePlanInstanceCount
